@@ -70,6 +70,7 @@ AirT_month_2017<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>%
 
 
 # modified by giulio
+# you can use lubridate::yday(time) to plot the day of the year
 p1 <- ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
       geom_smooth(stat = 'summary', linetype=0,
            fun.data = function(y) data.frame(ymin = quantile(y, .1),
