@@ -64,27 +64,48 @@ IT25_Data$yearfctr <- factor(IT25_Data$year)
 ## MONTHY DISTRIBUTIONS
 
 
+# modified by giulio
 AirT_month_2017<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
-    filter(year=="2017")%>%
-    group_by(month,year) %>% summarise(AirT_Month_2017 = mean(air_t_h, na.rm = T))
-
-AirT_month_2018<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
-    filter(year=="2018")%>%
-    group_by(month,year) %>% summarise(AirT_Month_2018 = mean(air_t_h, na.rm = T))
-
-AirT_Month_Full<-full_join(AirT_month_2017,AirT_month_2018)%>%
-    pivot_longer(c(`AirT_Month_2017`, `AirT_Month_2018`), names_to = "variable", values_to = "AirT_month")
+    group_by(month,year) %>% summarise(AirT_Month = mean(air_t_h, na.rm = T))
 
 
-
-p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
-    geom_smooth(stat = 'summary', linetype=0,
-            fun.data = function(y) data.frame(ymin = quantile(y, .1),
-                                              y = mean(y), ymax = quantile(y, .9)))+
-    ylim(-15, 25)+
-    geom_line(data=AirT_Month_Full, aes(x=month, y=AirT_month, color=variable))
+# modified by giulio
+p1 <- ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
+      geom_smooth(stat = 'summary', linetype=0,
+           fun.data = function(y) data.frame(ymin = quantile(y, .1),
+                                             y = mean(y), ymax = quantile(y, .9)))+
+      geom_smooth(aes(color = as.character(year)), stat = 'summary',
+      fun.data = function(y) data.frame(y = mean(y)))+
+      ylim(-15, 25)
 p1
+
+# added by giulio
+ggplot(data = IT25_Data,aes(x=round_date(ymd_hms(time),"month"),y=air_t_h))+
     
+    geom_smooth(stat = 'summary', linetype=0,
+           fun.data = function(y) data.frame(ymin = quantile(y, .1),
+                                             y = mean(y), ymax = quantile(y, .9)))+
+    
+    geom_smooth(aes(color = as.character(year)), stat = 'summary',
+    fun.data = function(y) data.frame(y = mean(y)))+
+    ylim(-15, 25)+
+facet_wrap(vars(station))
+
+# added by giulio
+IT25_Data%>%
+ggplot(aes(x=ymd_hms(time),y=air_t_h))+
+geom_point(size=0.4,alpha=0.3)+
+geom_smooth()
+
+# added by giulio
+month_airT = IT25_Data%>%
+mutate(month = round_date(ymd_hms(time),"month"))%>%
+select(month,air_t_h)%>% 
+group_by(month) %>% 
+summarise(air_t_h_avg = mean(air_t_h, na.rm = TRUE),
+air_t_h_q1 = quantile(air_t_h,.1,na.rm=TRUE),
+air_t_h_q9 = quantile(air_t_h,.9,na.rm=TRUE)) 
+
 p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
     geom_smooth(stat = 'summary', linetype=0,
                 fun.data = function(y) data.frame(ymin = quantile(y, .1),
