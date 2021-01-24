@@ -29,9 +29,9 @@ IT25_Data<-dplyr::bind_rows(df1,df2)
 
 
 # to determine the data tpe of a variable or column of dataframe
-class(IT25_Data$monthfctr)
+#class(IT25_Data$monthfctr)
 
-class(AirT_Month_Full$month)
+#class(AirT_Month_Full$month)
 
 
 # Create strings of the months and hours
@@ -75,12 +75,15 @@ AirT_month_2018<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>%
 AirT_Month_Full<-full_join(AirT_month_2017,AirT_month_2018)%>%
     pivot_longer(c(`AirT_Month_2017`, `AirT_Month_2018`), names_to = "variable", values_to = "AirT_month")
 
+
+
 p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
-geom_smooth(stat = 'summary', linetype=0,
+    geom_smooth(stat = 'summary', linetype=0,
             fun.data = function(y) data.frame(ymin = quantile(y, .1),
                                               y = mean(y), ymax = quantile(y, .9)))+
     ylim(-15, 25)+
     geom_line(data=AirT_Month_Full, aes(x=month, y=AirT_month, color=variable))
+p1
     
 p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
     geom_smooth(stat = 'summary', linetype=0,
@@ -90,7 +93,7 @@ p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
     geom_line(data=AirT_month_2017, aes(x=month, y=AirT_Month_2017, color="red"))+
         geom_line(data=AirT_month_2018, aes(x=month, y=AirT_Month_2018, color="blue"))
 
-
+p1
 ## boxplot monthly air_t_h distributions Mazia (all stations)
 p1<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = monthfctr, y= air_t_h, color = yearfctr))+
