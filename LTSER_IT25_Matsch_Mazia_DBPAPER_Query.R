@@ -164,7 +164,7 @@ IT25_Data<-dplyr::bind_rows(df1,df2)
 # to determine the data tpe of a variable or column of dataframe
 class(IT25_Data$monthfctr)
 
-class(df1$month)
+class(AirT_Month_Full$month)
 
 
 # Create strings of the months and hours
@@ -195,8 +195,7 @@ IT25_Data$yearfctr <- factor(IT25_Data$year)
 
 #---- Box plot Monthly distribution
 ## MONTHY DISTRIBUTIONS
-AirT_month<- aggregate(IT25_Data$air_t_h, list(IT25_Data$monthfctr), mean)
-AirT_month<-IT25_Data%>%group_by(monthfctr)%>% summarise_at(vars(~monthfctr),funs(mean(.,na.rm=T)))
+
 
 AirT_month_2017<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
     filter(year=="2017")%>%
@@ -206,16 +205,16 @@ AirT_month_2018<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>%
     filter(year=="2018")%>%
     group_by(month,year) %>% summarise(AirT_Month_2018 = mean(air_t_h, na.rm = T))
 
-AirT_Month<-full_join(AirT_month_2017,AirT_month_2018)%>%
+AirT_Month_Full<-full_join(AirT_month_2017,AirT_month_2018)%>%
     pivot_longer(c(`AirT_Month_2017`, `AirT_Month_2018`), names_to = "variable", values_to = "AirT_month")
 
-p1<-ggplot(data = IT25_Data,aes(x=monthfctr,y=air_t_h))+
+p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
 geom_smooth(stat = 'summary', linetype=0,
             fun.data = function(y) data.frame(ymin = quantile(y, .1),
                                               y = mean(y), ymax = quantile(y, .9)))+
     ylim(-15, 25)+
-    geom_line(data=AirT_Month, aes(x=month, y=variable, color=year))+
-    geom_line(data=AirT_Month, aes(x=month, y=variable,color =year))
+    geom_line(data=AirT_Month_Full, aes(x=month, y=variable, color=year))+
+    geom_line(data=AirT_Month_Full, aes(x=month, y=variable,color =year))
     
 p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
     geom_smooth(linetype=0)+
@@ -230,7 +229,7 @@ p1
 ## boxplot monthly air_t_h distributions Mazia (all stations)
 p1<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = monthfctr, y= air_t_h, color = stationfctr))+
-    ylab("Air Temp °C")+
+    ylab("Air Temp ?C")+
     theme_minimal()+
     xlab("Months")+
     ylim(-20, 30)
@@ -240,7 +239,7 @@ p1
 ## boxplot monthly air_t_h distributions Mazia (all stations)
 p1<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x=monthfctr, y= air_t_h))+
-    ylab("Air Temp °C")+
+    ylab("Air Temp ?C")+
     theme_minimal()+
     xlab("Months")+
     ylim(-20, 30)
@@ -248,7 +247,7 @@ p1
 
 p1<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = hourfctr, y= air_t_h, color =yearfctr))+
-    ylab("Air Temp °C")+
+    ylab("Air Temp ?C")+
     xlab("Hour of the day")+
     theme_minimal()+
     ylim(-20, 30)+
@@ -266,7 +265,7 @@ p2
 
 p3<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = monthfctr, y= wind_dir_h))+
-    ylab("Wind Dir °Degree")+
+    ylab("Wind Dir ?Degree")+
     theme_minimal()+
     xlab("Months")+
     ylim(0, 360)
@@ -292,7 +291,7 @@ p5
 ## boxplot monthly swc_st_02_h distributions Mazia (all stations)
 p6<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = monthfctr, y= swc_st_02_h))+
-    ylab("Soil Temp 2 cm °C")+
+    ylab("Soil Temp 2 cm ?C")+
     theme_minimal()+
     xlab("Months")+
     ylim(-5, 35)
@@ -301,7 +300,7 @@ p6
 ## boxplot monthly swc_st_05_h distributions Mazia (all stations)
 p7<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = monthfctr, y= swc_st_05_h))+
-    ylab("Soil Temp 5 cm °C")+
+    ylab("Soil Temp 5 cm ?C")+
     theme_minimal()+
     xlab("Months")+
     ylim(-5, 35)
@@ -309,7 +308,7 @@ p7
 ## boxplot monthly swc_st_20_h distributions Mazia (all stations)
 p8<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = monthfctr, y= swc_st_20_h))+
-    ylab("Soil Temp 20 cm °C")+
+    ylab("Soil Temp 20 cm ?C")+
     theme_minimal()+
     xlab("Months")+
     ylim(-5, 35)
@@ -452,7 +451,7 @@ gg1<-ggarrange(p1, p2,p3,p4,p5, p6,p7,p8,p9,p10,p11,p12,p13,p14,p15, ncol = 4, n
 ## boxplot hourly air_t_h distributions Mazia (all stations)
 p1<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = hourfctr, y= air_t_h, color =yearfctr))+
-    ylab("Air Temp °C")+
+    ylab("Air Temp ?C")+
     xlab("Hour of the day")+
     theme_minimal()+
     ylim(-20, 30)+
@@ -487,7 +486,7 @@ p2
 ## boxplot hourly wind_dir_h distributions Mazia (all stations)
 p3<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = hourfctr, y= wind_dir_h))+
-    ylab("Wind Dir °Degree")+
+    ylab("Wind Dir ?Degree")+
     xlab("Hour of the day")+
     theme_minimal()+
     ylim(0, 360)+
@@ -517,7 +516,7 @@ p5
 ## boxplot hourly swc_st_02_h distributions Mazia (all stations)
 p6<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = hourfctr, y= swc_st_02_h))+
-    ylab("Soil Temp 2 cm °C")+
+    ylab("Soil Temp 2 cm ?C")+
     xlab("Hour of the day")+
     theme_minimal()+
     ylim(0, 20)+
@@ -528,7 +527,7 @@ p6
 ## boxplot hourly  swc_st_05_h distributions Mazia (all stations)
 p7<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = hourfctr, y= swc_st_05_h))+
-    ylab("Soil Temp 5 cm °C")+
+    ylab("Soil Temp 5 cm ?C")+
     theme_minimal()+
     xlab("Hour of the day")+
     ylim(-5, 35)+
@@ -537,7 +536,7 @@ p7
 ## boxplothourly  swc_st_20_h distributions Mazia (all stations)
 p8<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = hourfctr, y= swc_st_20_h))+
-    ylab("Soil Temp 20 cm °C")+
+    ylab("Soil Temp 20 cm ?C")+
     theme_minimal()+
     xlab("Hour of the day")+
     ylim(-5, 35)+
@@ -718,9 +717,9 @@ ggplot(IT25_Data, aes(x = air_t_h, y = monthfctr, fill = ..x..)) +
     geom_density_ridges_gradient(scale = 2, rel_min_height = 0.01, gradient_lwd = 1.) +
     scale_x_continuous(expand = c(0.01, 0)) +
     scale_y_discrete(expand = c(0.01, 0)) +
-    scale_fill_viridis(name = "Temp. [ºC]", option = "E") +
+    scale_fill_viridis(name = "Temp. [?C]", option = "E") +
     labs(title = 'Temperatures',
-         subtitle = 'Mean temperatures °C by month for 2019-2020', 
+         subtitle = 'Mean temperatures ?C by month for 2019-2020', 
          x = "Mean Temperature") +
     xlim(-20, 30)+
     theme_ridges(font_size = 13, grid = TRUE) + theme(axis.title.y = element_blank())+
@@ -747,16 +746,16 @@ ggplot(IT25_Data,aes(x = air_t_h,y=station,height=..density..))+
           axis.ticks.y=element_blank(),
           strip.text.y = element_text(angle = 180, hjust = 1))+
     labs(title='Temperatures',
-         subtitle='Mean temperatures by month for 2019-2020', x = "Mean Tempterature [ºC]")    
+         subtitle='Mean temperatures by month for 2019-2020', x = "Mean Tempterature [?C]")    
 
 
 ggplot(IT25_Data, aes(x = air_t_h, y = monthfctr, fill = ..x..)) +
     geom_density_ridges_gradient(scale = 1.5, rel_min_height = 0.01, gradient_lwd = 1.) +
     scale_x_continuous(expand = c(0.01, 0)) +
     scale_y_discrete(expand = c(0.01, 0)) +
-    scale_fill_viridis(name = "Temp. [ºC]", option = "D") +
+    scale_fill_viridis(name = "Temp. [?C]", option = "D") +
     labs(title = 'Temperatures',
-         subtitle = 'Mean temperatures °C by month for 2019-2020', 
+         subtitle = 'Mean temperatures ?C by month for 2019-2020', 
          x = "Mean Temperature") +
     xlim(-20, 30)+
     theme_ridges(font_size = 13, grid = TRUE) + theme(axis.title.y = element_blank())
