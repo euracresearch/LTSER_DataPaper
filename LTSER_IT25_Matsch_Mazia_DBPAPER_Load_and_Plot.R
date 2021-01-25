@@ -1,6 +1,5 @@
 # https://cran.r-project.org/web/packages/influxdbr/index.html
 #library(influxdbr)
-if (!require("influxdbr")) install.packages("influxdbr");library ("influxdbr")
 if (!require("ggplot2")) install.packages("ggplot2");library ("ggplot2")
 if (!require("ggpubr")) install.packages("ggpubr");library ("ggpubr")
 if (!require("dplyr")) install.packages("dplyr");library ("dplyr")
