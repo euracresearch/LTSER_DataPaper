@@ -1,5 +1,6 @@
 # IT25_LTSER_DataPaper 
-Repository containing script for the IT25 LTSER Data Paper
+
+Repository containing R scripts for the IT25 LTSER Data Paper
 
 Author: S. Della Chiesa
 
