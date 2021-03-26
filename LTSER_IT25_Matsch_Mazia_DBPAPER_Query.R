@@ -18,15 +18,16 @@ if (!require("lubridate")) install.packages("lubridate");library ("lubridate")
 
 rm(list = ls())
 YourUserName <-"sdellachiesa"
-YourWorkingDir<-paste("C:/Users/",YourUserName,"/Scientific Network South Tyrol/LTER DB - Documents/Publication/01_LTER_DataPaper/04_R/IT25_LTSER_DataPaper", sep = "")
+YourWorkingDir<-"C:/Users/chiesa/OneDrive - GeoSci/01_Personal/00_R/12_LTSER_DataPaper"
+
 setwd(YourWorkingDir)
 #getwd()
 
 con <- influx_connection(scheme = c("https"),
-                         host = "",
+                         host = "bdpaper.alpenv.eurac.net",
                          port = 443, 
-                         user = "",
-                         pass = "")
+                         user = "admin",
+                         pass = "z)=YmYR8+hv9(4MX")
 
 
 # INFO: All data inside InfluxDB is in UTC, but the data of the LTSER IT25 Matsch Mazia
@@ -77,7 +78,7 @@ result <- influx_query(con,
                         OR snipeit_location_ref='13' OR snipeit_location_ref='36' OR snipeit_location_ref='34' 
                         OR snipeit_location_ref='11' OR snipeit_location_ref='37' OR snipeit_location_ref='3'
                         OR snipeit_location_ref='27'
-                       AND time >= '2019-01-01T00:00:00Z' AND time <= '2019-12-31T23:45:00Z'
+                       AND time >= '2017-01-01T00:00:00Z' AND time <= '2017-12-31T23:45:00Z'
                        GROUP BY time(1h),station
                        ORDER BY time ASC TZ('Etc/GMT-1')",
                        return_xts = FALSE)
@@ -154,17 +155,18 @@ IT25_Data<-left_join(IT25_Data, IT25_Metadata, by = "station")
 ## Some Pre-processing
 
 ## In the case you influxdb_query are to large save yearly queries in separates csv.
-#write.csv(IT25_Data,"IT25_Data_2019.csv", row.names = T)
+write.csv(IT25_Data,"IT25_Data_2017.csv", row.names = T)
+
 ## CONCATENATE CSV OF DIFFERENT YEARS
-df1<-read.csv("IT25_Data_2017.csv")
-df2<-read.csv("IT25_Data_2018.csv")
-IT25_Data<-dplyr::bind_rows(df1,df2)
+#df1<-read.csv("IT25_Data_2017.csv")
+#df2<-read.csv("IT25_Data_2018.csv")
+#IT25_Data<-dplyr::bind_rows(df1,df2)
 
 
 # to determine the data tpe of a variable or column of dataframe
-class(IT25_Data$monthfctr)
 
-class(AirT_Month_Full$month)
+
+#class(AirT_Month_Full$month)
 
 
 # Create strings of the months and hours
@@ -191,41 +193,25 @@ IT25_Data$stationfctr <- factor(IT25_Data$station,
 
 IT25_Data$yearfctr <- factor(IT25_Data$year)
 
-
+class(IT25_Data$monthfctr)
 
 #---- Box plot Monthly distribution
 ## MONTHY DISTRIBUTIONS
 
 
-AirT_month_2017<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
-    filter(year=="2017")%>%
-    group_by(month,year) %>% summarise(AirT_Month_2017 = mean(air_t_h, na.rm = T))
+#AirT_month_2017<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
+ #   filter(year=="2017")%>%
+#    group_by(month,year) %>% summarise(AirT_Month_2017 = mean(air_t_h, na.rm = T))
 
-AirT_month_2018<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
-    filter(year=="2018")%>%
-    group_by(month,year) %>% summarise(AirT_Month_2018 = mean(air_t_h, na.rm = T))
+#AirT_month_2018<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
+  #  filter(year=="2018")%>%
+ #   group_by(month,year) %>% summarise(AirT_Month_2018 = mean(air_t_h, na.rm = T))
 
-AirT_Month_Full<-full_join(AirT_month_2017,AirT_month_2018)%>%
-    pivot_longer(c(`AirT_Month_2017`, `AirT_Month_2018`), names_to = "variable", values_to = "AirT_month")
+#AirT_Month_Full<-full_join(AirT_month_2017,AirT_month_2018)%>%
+ #   pivot_longer(c(`AirT_Month_2017`, `AirT_Month_2018`), names_to = "variable", values_to = "AirT_month")
 
-p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
-geom_smooth(stat = 'summary', linetype=0,
-            fun.data = function(y) data.frame(ymin = quantile(y, .1),
-                                              y = mean(y), ymax = quantile(y, .9)))+
-    ylim(-15, 25)+
-    geom_line(data=AirT_Month_Full, aes(x=month, y=variable, color=year))+
-    geom_line(data=AirT_Month_Full, aes(x=month, y=variable,color =year))
     
-p1<-ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
-    geom_smooth(linetype=0)+
-    ylim(-15, 25)+
-    geom_line(data=AirT_Month, aes(x=month, y=AirT_Month_2017, color="green"))+
-    geom_line(data=AirT_Month, aes(x=month, y=AirT_Month_2018,color ="red"))
 
-
-
-
-p1
 ## boxplot monthly air_t_h distributions Mazia (all stations)
 p1<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = monthfctr, y= air_t_h, color = stationfctr))+
@@ -355,6 +341,7 @@ p11<-ggplot(data = IT25_Data)+
     ylim(0, 0.5)
 p11
 
+
 ## boxplot monthly swc_wc_20_h distributions Mazia (all stations)
 p11<-ggplot(data = IT25_Data)+
     geom_boxplot(aes(x = monthfctr, y= swc_wc_20_h))+
@@ -466,7 +453,6 @@ p1<-ggplot(data = IT25_Data, aes(x= month,y=air_t_h, color = yearfctr))+
 p1
 
 ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
-    geom
 geom_smooth(stat = 'summary', 
             fun.data = function(y) data.frame(ymin = quantile(y, .1),
                                               y = mean(y), ymax = quantile(y, .9)))+
