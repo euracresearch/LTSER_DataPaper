@@ -544,3 +544,28 @@ p181log<-IT25_Data %>%
 ggsave("./Images/Station_Density_Distribution_Yearly_log-log_swp_wp_20.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
 p181log
 
+
+
+p19<-ggplot(data = IT25_Data)+
+  geom_boxplot(aes(x = monthfctr, y= sr_h))+
+  ylab(" Global Radiaiton %")+
+  xlab(" Months")+
+  theme_minimal()+
+  xlab("Months")+
+  ylim(0, 1000)
+p19
+
+
+
+
+p12 <- ggplot(data = IT25_Data,aes(x=month,y=nr_up_sw_avg_h))+
+  geom_smooth(stat = 'summary', linetype=0,
+              fun.data = function(y) data.frame(ymin = quantile(y, .1),
+                                                y = mean(y), ymax = quantile(y, .9)))+
+  geom_smooth(aes(color = as.character(year)), stat = 'summary',
+              fun.data = function(y) data.frame(y = mean(y)))+
+  scale_x_continuous(breaks=seq(1,12,1),labels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))+
+  labs(x="Months")+
+  facet_wrap(. ~ stationfctr, ncol = 4)
+ggsave("./Images/Valley_Monthly_sr.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
+p12
