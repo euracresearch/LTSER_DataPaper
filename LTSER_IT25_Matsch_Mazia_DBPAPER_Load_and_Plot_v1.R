@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 if (!require("ggplot2")) install.packages("ggplot2");library ("ggplot2")
 if (!require("ggpubr")) install.packages("ggpubr");library ("ggpubr")
 if (!require("dplyr")) install.packages("dplyr");library ("dplyr")
@@ -10,8 +8,6 @@ if (!require("ggridges")) install.packages("ggridges");library ("ggridges")
 if (!require("knitr")) install.packages("knitr");library ("knitr")
 if (!require("rmarkdown")) install.packages("rmarkdown");library ("rmarkdown")
 
-=======
->>>>>>> fca123431ab6a9513a4b76e4e653143b9a07869c
 ## LOAD PLOT IT25_DATA
 
 rm(list = ls())
@@ -23,14 +19,9 @@ rm(list = ls())
 ## CONCATENATE CSV OF DIFFERENT YEARS
 df1<-read.csv("IT25_Data_2017.csv")
 df2<-read.csv("IT25_Data_2018.csv")
-<<<<<<< HEAD
 df3<-read.csv("IT25_Data_2019.csv")
 df4<-read.csv("IT25_Data_2020.csv")
 IT25_Data<-dplyr::bind_rows(df1,df2,df3,df4)
-
-=======
-IT25_Data<-dplyr::bind_rows(df1,df2)
->>>>>>> fca123431ab6a9513a4b76e4e653143b9a07869c
 
 # Create month, hour, yers new variables inside the IT25_Data dataframe.
 IT25_Data$month<-month(IT25_Data$time)
@@ -50,7 +41,7 @@ IT25_Data$stationfctr <- factor(IT25_Data$station,
                                            "m4","m4 snow","m2", "m3", "s4", "s3"))
 
 IT25_Data$yearfctr <- factor(IT25_Data$year)
-<<<<<<< HEAD
+
 #class(IT25_Data$time)
 #test<-as.Date(IT25_Data$time)
 #pippo<-as.Date(month(test))
@@ -63,12 +54,10 @@ IT25_Data$yearfctr <- factor(IT25_Data$year)
 #AirT_month_2017<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
 #  group_by(month,year) %>% summarise(AirT_Month = mean(air_t_h, na.rm = T))
 
-=======
-
 # modified by giulio
-AirT_month_2017<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
-  group_by(month,year) %>% summarise(AirT_Month = mean(air_t_h, na.rm = T))
->>>>>>> fca123431ab6a9513a4b76e4e653143b9a07869c
+#AirT_month_2017<-IT25_Data%>%select(time,month,year,hour,air_t_h)%>% 
+ # group_by(month,year) %>% summarise(AirT_Month = mean(air_t_h, na.rm = T))
+
 
 p1 <- ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
   geom_smooth(stat = 'summary', linetype=0,
@@ -76,7 +65,6 @@ p1 <- ggplot(data = IT25_Data,aes(x=month,y=air_t_h))+
                                                 y = mean(y), ymax = quantile(y, .9)))+
   geom_smooth(aes(color = as.character(year)), stat = 'summary',
               fun.data = function(y) data.frame(y = mean(y)))+
-<<<<<<< HEAD
   scale_x_continuous(breaks=seq(1,12,1),labels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))+
   labs(x="Months")
 ggsave("./Images/Valley_Monthly_AirT.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
@@ -96,18 +84,15 @@ ggsave("./Images/Station_Monthly_AirT.tiff", units="cm", width=35, height=20, dp
 p11
 
 
-=======
-  ylim(-15, 25)
 p1
 
->>>>>>> fca123431ab6a9513a4b76e4e653143b9a07869c
 p2 <- ggplot(data = IT25_Data,aes(x=month,y=air_rh_h))+
   geom_smooth(stat = 'summary', linetype=0,
               fun.data = function(y) data.frame(ymin = quantile(y, .1),
                                                 y = mean(y), ymax = quantile(y, .9)))+
   geom_smooth(aes(color = as.character(year)), stat = 'summary',
               fun.data = function(y) data.frame(y = mean(y)))+
-<<<<<<< HEAD
+
   ylim(0, 100)+
   scale_x_continuous(breaks=seq(1,12,1),labels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))+
   labs(x="Months")
@@ -558,7 +543,4 @@ p181log<-IT25_Data %>%
     facet_wrap(. ~ stationfctr, ncol = 4)
 ggsave("./Images/Station_Density_Distribution_Yearly_log-log_swp_wp_20.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
 p181log
-=======
-  ylim(0, 100)
-p2
->>>>>>> fca123431ab6a9513a4b76e4e653143b9a07869c
+
