@@ -544,8 +544,6 @@ p181log<-IT25_Data %>%
 ggsave("./Images/Station_Density_Distribution_Yearly_log-log_swp_wp_20.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
 p181log
 
-<<<<<<< HEAD
-
 
 p19<-ggplot(data = IT25_Data)+
   geom_boxplot(aes(x = monthfctr, y= sr_h))+
@@ -570,5 +568,4 @@ p12 <- ggplot(data = IT25_Data,aes(x=month,y=nr_up_sw_avg_h))+
   facet_wrap(. ~ stationfctr, ncol = 4)
 ggsave("./Images/Valley_Monthly_sr.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
 p12
-=======
->>>>>>> 59c5a6ea4142a392c0d93f2a0084e0f45bb42bf6
+
