@@ -11,9 +11,9 @@ if (!require("rmarkdown")) install.packages("rmarkdown");library ("rmarkdown")
 ## LOAD PLOT IT25_DATA
 
 rm(list = ls())
+setwd("C:/Users/chiesa/OneDrive - GeoSci/01_Personal/00_R/12_LTSER_DataPaper")
 
 ## Some Pre-processing
-
 ## In the case you influxdb_query are to large save yearly queries in separates csv.
 #write.csv(IT25_Data,"IT25_Data_2019.csv", row.names = T)
 ## CONCATENATE CSV OF DIFFERENT YEARS
@@ -159,6 +159,19 @@ p41 <- ggplot(data = IT25_Data,aes(x=month,y=wind_speed_max_h))+
 
 ggsave("./Images/Station_Monthly_WspMax.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
 p41
+
+p411 <- ggplot(data = IT25_Data,aes(x=hour,y=wind_speed_max_h))+
+  geom_smooth(stat = 'summary', linetype=0,
+              fun.data = function(y) data.frame(ymin = quantile(y, .1),
+                                                y = mean(y), ymax = quantile(y, .9)))+
+  geom_smooth(aes(color = as.character(year)), stat = 'summary',
+              fun.data = function(y) data.frame(y = mean(y)))+
+  scale_x_continuous(breaks=seq(0,24,2))+
+  labs(x="Hours")+
+  facet_wrap(. ~ stationfctr, ncol = 4)
+
+ggsave("./Images/Station_Hourly_WspMax.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
+p411
 
 p44 <- ggplot(data = IT25_Data,aes(x=hour,y=wind_dir_h))+
   geom_smooth(stat = 'summary', linetype=0,
@@ -566,6 +579,7 @@ p12 <- ggplot(data = IT25_Data,aes(x=month,y=nr_up_sw_avg_h))+
   scale_x_continuous(breaks=seq(1,12,1),labels=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"))+
   labs(x="Months")+
   facet_wrap(. ~ stationfctr, ncol = 4)
+
 ggsave("./Images/Valley_Monthly_sr.tiff", units="cm", width=35, height=20, dpi=300, compression = 'lzw')
 p12
 
